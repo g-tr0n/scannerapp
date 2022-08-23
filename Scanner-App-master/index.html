@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scanner App</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Milligram CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"> -->
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <!--  -->
+  </head>
+  <body>
+    <section class="flex-container">
+      <article class="flex-box form-container">
+        <form id="entry-form" class="pb-3">
+          <div class="form-group mb-2">
+            <label for="barcode-entry" class="form-label mb-0">Barcode Entry</label>
+            <input
+              type="text"
+              id="barcode-entry"
+              key="barcodeEntry"
+              class="form-input form-control"
+              disabled
+              placeholder="Not Ready"
+            />
+          </div>
+          <div class="form-group mb-2">
+            <!-- Checkbox for input -->
+            <!-- TODO onclick -->
+            <input
+              type="checkbox"
+              id="manufacturer-checkbox"
+              for="manufacturer"
+              class="form-check-input form-group-label-controller"
+              value=""
+              aria-label="Checkbox for following text input"
+              onclick="handleCheckboxControl(this)"
+              checked
+            />
+            <!-- Label for input -->
+            <label for="manufacturer-checkbox" class="form-label">Manufacturer</label>
+            <!-- Input for form -->
+            <input
+              type="text"
+              id="manufacturer"
+              key="manufacturer"
+              class="form-input form-control"
+            />
+          </div>
+          <div class="form-group mb-2">
+            <!-- Checkbox for input -->
+            <input
+              type="checkbox"
+              id="model-checkbox"
+              for="model"
+              class="form-check-input form-group-label-controller"
+              value=""
+              aria-label="Checkbox for following text input"
+              onclick="handleCheckboxControl(this)"
+              checked
+            />
+            <!-- Label for input -->
+            <label for="model-checkbox" class="form-label">Model</label>
+            <!-- Input for form -->
+            <input type="text" id="model" key="model" class="form-input form-control" />
+          </div>
+          <div class="form-group mb-2">
+            <!-- Checkbox for input -->
+            <input
+              type="checkbox"
+              id="container-checkbox"
+              for="container"
+              class="form-check-input form-group-label-controller"
+              value=""
+              aria-label="Checkbox for following text input"
+              onclick="handleCheckboxControl(this)"
+              checked
+            />
+            <!-- Label for input -->
+            <label for="container-checkbox" class="form-label">Container</label>
+            <!-- Input for form -->
+            <input
+              type="text"
+              id="container"
+              key="container"
+              class="form-input form-control"
+              disabled
+            />
+          </div>
+          <div class="form-group mb-2">
+            <!-- Checkbox for input -->
+            <input
+              type="checkbox"
+              id="manufacturer-serial-checkbox"
+              for="manufacturer-serial-input"
+              class="form-check-input form-group-label-controller"
+              value=""
+              aria-label="Checkbox for following text input"
+              onclick="handleCheckboxControl(this)"
+              checked
+            />
+            <!-- Label for input -->
+            <label for="manufacturer-serial-checkbox" class="form-label">Manufacturer Serial</label>
+            <!-- Input for form -->
+            <input
+              type="text"
+              id="manufacturer-serial-input"
+              key="manufacturerSerial"
+              class="form-input form-control"
+              disabled
+            />
+          </div>
+          <!-- <button id="barcode-entry-submit" type="submit" disabled hidden>Submit</button> -->
+          <!-- <button type="reset">Reset Form</button> -->
+        </form>
+        <button id="start-scanning" class="btn btn-sm btn-success">Begin Scanning</button>
+        <button id="stop-scanning" class="d-none btn btn-sm btn-danger">Stop Scanning</button>
+      </article>
+      <!-- LOG BOX -->
+      <div id="log-box" class="btn btn-warning log-box">
+        <div>
+          <span class="text-decoration-underline">Last Valid Scan</span>
+          <h1 id="log-box-entry" class="display-1 text-wrap">None</h1>
+          <span id="log-box-msg">Not Ready For Scanning</span>
+        </div>
+      </div>
+    </section>
+    <section class="table-section mt-2">
+      <div class="d-flex justify-content-end table-buttons mt-2 px-1">
+        <div class="flex-fill">
+          <button
+            id="export-scan-session-btn"
+            class="btn btn-sm btn-primary"
+            title="Exports all fields in the table for the scan session and moves them to history"
+          >
+            Export
+          </button>
+          <button
+            onclick="window.open('/historytable.html', '_blank')"
+            target="_blank"
+            class="btn btn-sm btn-primary"
+            title=""
+          >
+            View All History
+          </button>
+        </div>
+        <!-- REMOVE ALL HISTORY -->
+        <div class="modal-container">
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            data-toggle="modal"
+            data-target="#removeHistoryModal"
+          >
+            Remove All History
+          </button>
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="removeHistoryModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="removeHistoryModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="removeHistoryModalLabel">Are you sure?</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    <strong>All</strong> history for every item ever scanned on this browser will be
+                    removed
+                  </p>
+                  <p>
+                    History is needed for comparing barcodes being scanned to previous barcodes and
+                    ensuring there are no <strong>duplicates</strong> scanned
+                  </p>
+                  <p>This does not remove any data from the current scanning session</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                  </button>
+                  <button id="confirm-remove-all-history-btn" type="button" class="btn btn-danger">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- REMOVE ALL SCAN HISTORY -->
+        <div class="modal-container">
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            data-toggle="modal"
+            data-target="#removeScanModal"
+          >
+            Remove All Scanned
+          </button>
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="removeScanModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="removeScanModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="removeScanModalLabel">Are you sure?</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p><strong>All</strong> items scanned during this scan session will be removed</p>
+                  <p>The items will not be available in the history</p>
+                  <p>The will not effect the history</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                  </button>
+                  <button id="confirm-remove-scan-session-btn" type="button" class="btn btn-danger">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- REMOVE LAST SCANNED -->
+        <div class="modal-container">
+          <!-- <button
+            onclick="removeAllHistory()"
+            class="btn btn-sm btn-warning"
+            title="Removes the most recently scanned item from everywhere"
+          >
+            Remove Last Scanned
+          </button> -->
+          <button
+            id="remove-last-scanned-btn"
+            type="button"
+            class="btn btn-sm btn-danger"
+            data-toggle="modal"
+            data-target="#removeLastScannedModal"
+          >
+            Remove Last Scanned
+          </button>
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="removeLastScannedModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="removeLastScannedModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="removeLastScannedModalLabel">Are you sure?</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <span>Last Scanned Item:</span>
+                  <pre id="last-scanned-code">Loading Data...</pre>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary modal-confirm"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    id="confirm-remove-last-scanned-btn"
+                    type="button"
+                    class="btn btn-danger modal-confirm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h4 class="h4 text-center mt-2">Scanning Session</h4>
+      <table class="barcode-entries table table-hover table-responsive">
+        <thead>
+          <tr>
+            <th scope="col">Barcode</th>
+            <th>Manufacturer</th>
+            <th>Model</th>
+            <th>Container</th>
+            <th>Manufacturer Serial</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <a id="downloadAnchorEl"></a>
+    <script type="module" src="/js/scanningHandler.js"></script>
+    <script type="module" src="/js/barcodeControlButtons.js"></script>
+    <script src="/js/formControl.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+      integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+html {
+  font-family: "Raleway", sans-serif;
+  margin: 1rem;
+  /* height: 100%;
+  overflow: hidden; */
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-box {
+  padding: 1rem;
+}
+
+.form-container {
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.form-label {
+  /* Dont allow selection */
+  user-select: none;
+}
+
+#log-box {
+  display: grid;
+  place-items: center;
+  margin-left: 1rem;
+  border: 1px solid grey;
+  width: 100%;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+#log-box-entry {
+  font-size: 7.5vw;
+}
+
+.table-section {
+  border-top: 2px solid #cfcfd3;
+}
+
+.table-buttons {
+  gap: 0.5rem;
+}
+
+.table-delete-row-btn-container {
+  /* height: 20px; */
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+.table-delete-row-btn {
+  font-size: small !important;
+  padding: 0.1rem 0.25rem !important;
+}
+
+#page-container > div {
+  height: 50vh;
+}
+
+#downloadAnchorEl {
+  display: none;
+}
